@@ -182,7 +182,7 @@ def create_dhcpd_config():
         sys.exit(2)
 
 def usage():
-    print "Usage: dhcpconf [OPTIONS]..."
+    print "Usage: abiquo-relay-scripts.py [OPTIONS]..."
     print "Creates configuration files and start scripts for the dhcp server and relay.\n"
     print "-h\t--help\t\t\t\t\tThis help screen."
     print "-r\t--relay-server-interface=INTERFACE\tInterface of relay server connected to the management network."
