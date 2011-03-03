@@ -191,7 +191,6 @@ def usage():
     print "Creates configuration files and start scripts for the dhcp server and relay.\n"
     print "-h\t--help\t\t\t\t\tThis help screen."
     print "-r\t--relay-server-interface=INTERFACE\tInterface of relay server connected to the management network."
-    print "-i\t--relay-server-ip=IP\t\t\tIP for the relay in the management network interface"
     print "-s\t--relay-service-interface=INTERFACE\tInterface of the relay server connected to service network, where VLANs will be created."
     print "-v\t--vlan-range=VLANRANGE\t\t\tVLAN range (e.g. 2-200)."
     print "-x\t--dhcp-server-ip=IP\t\t\tIP of the DHCP server."
@@ -201,14 +200,13 @@ def usage():
 def main():
     
     relay_server_interface=None
-    relay_server_ip=None
     relay_service_interface=None
     vlan_range=None
     dhcp_server_ip=None
     relay_service_network=None
 
     try:
-        opts, args = getopt.getopt(sys.argv[1:], "hr:i:s:v:x:n:b:", ["help", "relay-server-interface=", "relay-server-ip=", "relay-service-interface=", "vlan-range=", "dhcp-server-ip=", "relay-service-network="])
+        opts, args = getopt.getopt(sys.argv[1:], "hr:s:v:x:n:b:", ["help", "relay-server-interface=", "relay-service-interface=", "vlan-range=", "dhcp-server-ip=", "relay-service-network="])
     except getopt.GetoptError, err:
         print str(err)
         sys.exit(2)
@@ -219,8 +217,6 @@ def main():
             sys.exit()
         elif o in ("-r", "--relay-server-interface"):
             relay_server_interface=a
-        elif o in ("-i", "--relay-server-ip"):
-            relay_server_ip=a
         elif o in ("-s", "--relay-service-interface"):
             relay_service_interface=a
         elif o in ("-v", "--vlan-range"):
@@ -230,24 +226,16 @@ def main():
         elif o in ("-n", "--relay-service-network"):
             relay_service_network=a
     
-    if not (relay_server_interface and relay_server_ip and relay_service_interface and vlan_range and dhcp_server_ip and relay_service_network) or relay_service_network.split(".")[3] != "0":
+    if not (relay_server_interface and relay_service_interface and vlan_range and dhcp_server_ip and relay_service_network) or relay_service_network.split(".")[3] != "0":
         usage()
         return
 
-    print "-- Generating files --\n"
+    print "-- Generating file --\n"
 
-    #Generate dhcpd.conf
-    print " * dhcpd.conf\t\tConfiguration file for the dhcp server"
-    create_dhcpd_config()
-    
     #Vlans script
     print " * relay-config\t\tScript to generate VLANs and assign IPs"
     create_vlans_script(relay_service_interface, vlan_range, dhcp_server_ip, relay_service_network, relay_server_interface)
     
-    #Route for the server
-    print " * route-eth0\t\tScript to configure static route to relay in the DHCP server"
-    create_route_config(vlan_range, relay_server_ip, relay_service_network)
-
     print "\n-- End --\n"
 
 
