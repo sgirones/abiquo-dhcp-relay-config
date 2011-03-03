@@ -156,36 +156,6 @@ def create_vlans_script(relay_service_interface, vlan_range, dhcp_server_ip, rel
         f.close()
         sys.exit(2)
 
-def create_route_config(vlan_range, relay_server_ip, relay_service_network):
-    try:
-        f = open("route-eth0", "w")
-        
-        #Calculate mask
-        minvlan = int(vlan_range.split('-')[0])
-        maxvlan = int(vlan_range.split('-')[1])
-        numvlans = maxvlan-minvlan+1
-        mask = 32
-        while numvlans > (2**(32-mask)):
-            mask -=1
-        f.write(relay_service_network + "/" + str(mask)  + " via " + relay_server_ip + "\n")
-        f.close()
-    except Exception, e:
-        print "\nError creating route-eth0.\n"
-        print e
-        f.close()
-        sys.exit(2)
-        
-def create_dhcpd_config():
-    try:
-        f = open("dhcpd.conf", "w")
-        f.write("authoritative;\nddns-update-style none;\n\nsubnet 0.0.0.0 netmask 0.0.0.0 {}\n")
-        f.close()
-    except Exception, e:
-        print "\nError creating dhcpd.conf.\n"
-        print e
-        f.close()
-        sys.exit(2)
-
 def usage():
     print "Usage: abiquo-relay-scripts.py [OPTIONS]..."
     print "Creates configuration files and start scripts for the dhcp server and relay.\n"
