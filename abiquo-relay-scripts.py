@@ -115,6 +115,11 @@ def create_vlans_script(relay_service_interface, vlan_range, dhcp_server_ip, rel
         data += '    \n'
         data += '    killproc relay-config\n'
         data += '    killproc dhcrelay\n'
+        data += '    \n'
+        data += '    for i in `seq %d %d`; do\n' % (minvlan, maxvlan)
+        data += '        vconfig rem %s.$i"\n' % (relay_service_interface)
+        data += '    done\n'
+        data += '    \n'
         data += '    RETVAL=$?\n'
         data += '    echo\n'
         data += '    [ $RETVAL -eq 0 ] && rm -f /var/lock/subsys/relay-config;\n'
