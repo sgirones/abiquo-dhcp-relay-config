@@ -57,7 +57,7 @@ def create_vlans_script(relay_service_interface, vlan_range, dhcp_server_ip, rel
     try:
         f = open("relay-config", "w")
 
-        data = "#!/bin/sh\n\n"
+        data = "#!/bin/bash\n\n"
         
         data += '# Abiquo Dhcp relay config. Vlans generation.\n'
         data += '#\n'
@@ -75,7 +75,7 @@ def create_vlans_script(relay_service_interface, vlan_range, dhcp_server_ip, rel
             data += '            vlan=$[$i*254 + $j - 1 + %d]\n' % (int(minvlan))
             data += '            vconfig add %s $vlan\n' % (str(relay_service_interface))
             data += '            ifconfig %s.$vlan up\n' % (str(relay_service_interface))
-            data += '            ifconfig %s.$vlan %d.%d.$[i + %d].$j netmask 255.255.255.255\n' % (str(relay_service_interface), int(relay_service_network.split(".")[0]), int(relay_service_network.split(".")[1]), int(relay_service_network.split(".")[2]))
+            data += '            ifconfig %s.$vlan %d.%d.$[$i + %d].$j netmask 255.255.255.255\n' % (str(relay_service_interface), int(relay_service_network.split(".")[0]), int(relay_service_network.split(".")[1]), int(relay_service_network.split(".")[2]))
             data += '        done\n'
             data += '    done\n'
 
@@ -117,7 +117,7 @@ def create_vlans_script(relay_service_interface, vlan_range, dhcp_server_ip, rel
         data += '    killproc dhcrelay\n'
         data += '    \n'
         data += '    for i in `seq %d %d`; do\n' % (minvlan, maxvlan)
-        data += '        vconfig rem %s.$i"\n' % (relay_service_interface)
+        data += '        vconfig rem %s.$i\n' % (relay_service_interface)
         data += '    done\n'
         data += '    \n'
         data += '    RETVAL=$?\n'
