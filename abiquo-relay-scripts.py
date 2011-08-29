@@ -84,7 +84,7 @@ def create_vlans_script(relay_service_interface, vlan_range, dhcp_server_ip, rel
             data += '        vlan=$[%s + $i - 1 + %s]\n' % (int(loops*254), int(minvlan))
             data += '        vconfig add %s $vlan\n' % (str(relay_service_interface))
             data += '        ifconfig %s.$vlan up\n' % (str(relay_service_interface))
-            data += '        ifconfig %s.$vlan 192.168.%d.$i netmask 255.255.255.255\n' % (str(relay_service_interface), int(relay_service_network.split(".")[2]) + loops)
+            data += '        ifconfig %s.$vlan %d.%d.%d.$i netmask 255.255.255.255\n' % (str(relay_service_interface), int(relay_service_network.split(".")[0]), int(relay_service_network.split(".")[1]), int(relay_service_network.split(".")[2]) + loops)
             data += '    done\n'
 
         #DHCrelay command
