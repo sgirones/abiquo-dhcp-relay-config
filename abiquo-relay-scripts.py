@@ -109,24 +109,12 @@ def create_vlans_script(relay_service_interface, vlan_range, dhcp_server_ip, rel
         data = '\nstop() { \n'
         data += '    echo -n $"Stopping $prog: "\n'
         data += '    \n'
-        data += '    if [ ! -e /var/lock/subsys/relay-config ]; then\n'
-        data += '        echo -n $"cannot stop relay-config: relay-config is not running."\n'
-        data += '        failure $"cannot stop relay-config: relay-config is not running."\n'
-        data += '        echo\n'
-        data += '        return 1;\n'
-        data += '    fi\n'
-        data += '    \n'
-        data += '    killproc relay-config\n'
-        data += '    killproc dhcrelay\n'
+        data += '    pkill dhcrelay\n'
         data += '    \n'
         data += '    for i in `seq %d %d`; do\n' % (minvlan, maxvlan)
         data += '        vconfig rem %s.$i\n' % (relay_service_interface)
         data += '    done\n'
         data += '    \n'
-        data += '    RETVAL=$?\n'
-        data += '    echo\n'
-        data += '    [ $RETVAL -eq 0 ] && rm -f /var/lock/subsys/relay-config;\n'
-        data += '    return $RETVAL\n'
         data += '}\n'
         f.write(data)
         
